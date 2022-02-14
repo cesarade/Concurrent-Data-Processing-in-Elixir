@@ -1,9 +1,11 @@
 defmodule Sender do
 
   def notity_all(emails) do
-    Enum.each(emails, fn email ->
-      Task.start(fn ->  send_email(email) end)
+    emails
+    |> Enum.map(fn email ->
+      Task.async(fn ->  send_email(email) end)
     end)
+    |> Enum.map(&Task.yield/1)
   end
 
   def send_email(email) do

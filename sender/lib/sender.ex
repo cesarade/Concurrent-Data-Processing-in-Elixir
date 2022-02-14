@@ -2,10 +2,8 @@ defmodule Sender do
 
   def notity_all(emails) do
     emails
-    |> Enum.map(fn email ->
-      Task.async(fn ->  send_email(email) end)
-    end)
-    |> Enum.map(&Task.yield/1)
+    |> Task.async_stream(&send_email/1)
+    |> Enum.to_list()
   end
 
   def send_email(email) do
